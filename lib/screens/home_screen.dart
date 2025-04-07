@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../services/news_service.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -26,6 +27,15 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _launchURL(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No se pudo abrir el enlace')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,39 +46,30 @@ class _HomeScreenState extends State<HomeScreen> {
               itemCount: _news.length,
               itemBuilder: (context, index) {
                 final article = _news[index];
-                return Card(
-                  margin: const EdgeInsets.all(8),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  elevation: 4,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (article['image'] != null)
-                        ClipRRect(
-                          borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(12)),
-                          child: Image.network(article['image']),
-                        ),
-                      Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              article['title'] ?? '',
+                return GestureDetector(
+                  onTap: () => _launchURL(article['url']),
+                  child: Card(
+                    margin: const EdgeInsets.all(10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 5,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(article['title'] ?? '',
                               style: const TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              article['description'] ?? '',
-                              style: const TextStyle(fontSize: 14),
-                            ),
-                          ],
-                        ),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              )),
+                          const SizedBox(height: 8),
+                          Text(article['description'] ?? '',
+                              style: const TextStyle(fontSize: 14)),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 );
               },
