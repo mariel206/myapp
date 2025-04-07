@@ -69,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               style: const TextStyle(fontSize: 14)),
                         ],
                       ),
-                    ),
+                    )
                   ),
                 );
               },
