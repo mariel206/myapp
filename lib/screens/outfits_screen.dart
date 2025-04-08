@@ -12,7 +12,6 @@ class _OutfitsScreenState extends State<OutfitsScreen> {
 
   void _subirOutfit() {
     setState(() {
-      // Solo agregamos un texto simulado como si fuera una foto subida
       outfits.add('Outfit ${outfits.length + 1}');
     });
   }
